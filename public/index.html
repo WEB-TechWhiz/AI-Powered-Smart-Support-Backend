@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Smart Support - Console Operations</title>
+    <!-- Google Fonts Integration -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">AI</span>
+          <div>
+            <strong>Smart Support</strong>
+            <span>Customer Console</span>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="Primary navigation">
+          <button class="nav-item active" data-view="overview" title="Overview">
+            <span class="icon">⌂</span><span>Overview</span>
+          </button>
+          <button class="nav-item" data-view="chat" title="AI chat">
+            <span class="icon">✦</span><span>AI Chat</span>
+          </button>
+          <button class="nav-item" data-view="tickets" title="Tickets">
+            <span class="icon">□</span><span>Tickets</span>
+          </button>
+          <button class="nav-item" data-view="knowledge" title="Knowledge base">
+            <span class="icon">⌕</span><span>Knowledge</span>
+          </button>
+          <button class="nav-item" data-view="feedback" title="Feedback">
+            <span class="icon">★</span><span>Feedback</span>
+          </button>
+          <button class="nav-item admin-only hidden" data-view="admin" title="Admin">
+            <span class="icon">◆</span><span>Admin Panel</span>
+          </button>
+        </nav>
+
+        <div class="session-panel">
+          <div class="session-user-avatar">👤</div>
+          <div class="session-details">
+            <div class="session-name" id="sessionName">Not signed in</div>
+            <div class="session-meta" id="sessionMeta">Connect to the backend API</div>
+          </div>
+          <button class="ghost-button" id="logoutButton" type="button">Sign out</button>
+        </div>
+      </aside>
+
+      <!-- WORKSPACE -->
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Operations Workspace</p>
+            <h1 id="viewTitle">Overview</h1>
+          </div>
+          <div class="connection">
+            <span class="status-dot" id="healthDot"></span>
+            <span id="healthText">Checking API</span>
+          </div>
+        </header>
+
+        <!-- AUTHENTICATION FORM VIEW -->
+        <section id="authView" class="auth-layout">
+          <div class="auth-copy">
+            <p class="eyebrow">Agentic customer support backend</p>
+            <h2>Deploy the ultimate AI assistant for support triage.</h2>
+            <p>
+              Log in to access your dashboard. The console dynamically adjusts permissions to expose AI chat workflows, manual ticketing logs, knowledge search engines, satisfaction streams, and administrative audit trails.
+            </p>
+          </div>
+          <div class="auth-card">
+            <div class="tabs" role="tablist">
+              <button class="tab active" id="loginTab" type="button">Login</button>
+              <button class="tab" id="registerTab" type="button">Register</button>
+            </div>
+            <form id="authForm" class="form-stack">
+              <label class="register-field hidden">
+                Full Name
+                <input id="nameInput" autocomplete="name" placeholder="Aisha Khan" />
+              </label>
+              <label>
+                Email Address
+                <input id="emailInput" type="email" autocomplete="email" placeholder="you@example.com" required />
+              </label>
+              <label>
+                Security Password
+                <input id="passwordInput" type="password" autocomplete="current-password" minlength="6" placeholder="••••••••" required />
+              </label>
+              <button class="primary-button" id="authSubmit" type="submit">Login</button>
+              <p class="form-message" id="authMessage"></p>
+            </form>
+          </div>
+        </section>
+
+        <!-- APP CONTENT VIEW -->
+        <section id="appView" class="hidden">
+          
+          <!-- OVERVIEW VIEW PANEL -->
+          <section class="view-panel" data-panel="overview">
+            <div class="metrics-grid" id="overviewMetrics"></div>
+            <div class="split-layout">
+              <div class="surface">
+                <div class="section-heading">
+                  <h2>Recent support tickets</h2>
+                  <button class="small-button" data-view-link="tickets" type="button">Open Queue</button>
+                </div>
+                <div class="list" id="recentTickets"></div>
+              </div>
+              <div class="surface">
+                <div class="section-heading">
+                  <h2>Knowledge article search</h2>
+                  <button class="small-button" data-view-link="knowledge" type="button">Search KB</button>
+                </div>
+                <div class="compact-search">
+                  <input id="quickKbInput" placeholder="Search support articles..." />
+                  <button class="icon-button" id="quickKbButton" type="button" title="Search">⌕</button>
+                </div>
+                <div class="list" id="quickKbResults"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- CHAT VIEW PANEL -->
+          <section class="view-panel hidden" data-panel="chat">
+            <div class="chat-layout">
+              <div class="chat-window">
+                <div class="message-list" id="messageList"></div>
+                <form class="chat-composer" id="chatForm">
+                  <input id="chatInput" placeholder="Ask the AI helper, report billing issues, or request ticket escalation..." required />
+                  <button class="primary-button" type="submit">Send Message</button>
+                </form>
+              </div>
+              <aside class="surface chat-insights">
+                <h2>AI Triage Analytics</h2>
+                <div class="insights-scroll">
+                  <dl id="chatInsights"></dl>
+                </div>
+                <button class="ghost-button clear-chat-btn" id="clearChatButton" type="button">Clear conversation</button>
+              </aside>
+            </div>
+          </section>
+
+          <!-- TICKETS VIEW PANEL -->
+          <section class="view-panel hidden" data-panel="tickets">
+            <div class="toolbar">
+              <div class="segmented" id="ticketFilter">
+                <button class="active" data-status="all" type="button">All Tickets</button>
+                <button data-status="open" type="button">Open</button>
+                <button data-status="pending" type="button">Pending</button>
+                <button data-status="escalated" type="button">Escalated</button>
+                <button data-status="resolved" type="button">Resolved</button>
+              </div>
+              <button class="primary-button" id="newTicketButton" type="button">+ Create Ticket</button>
+            </div>
+            <div class="ticket-grid">
+              <div class="surface">
+                <div class="list ticket-list-scroll" id="ticketList"></div>
+              </div>
+              <div class="surface ticket-detail-pane" id="ticketDetail"></div>
+            </div>
+          </section>
+
+          <!-- KNOWLEDGE VIEW PANEL -->
+          <section class="view-panel hidden" data-panel="knowledge">
+            <div class="toolbar">
+              <div class="compact-search wide">
+                <input id="kbInput" placeholder="Search customer support articles and guides..." />
+                <button class="icon-button" id="kbButton" type="button" title="Search">⌕</button>
+              </div>
+              <button class="primary-button admin-only hidden" id="newArticleButton" type="button">+ New Article</button>
+            </div>
+            <div class="split-layout">
+              <div class="surface">
+                <div class="list" id="kbResults"></div>
+              </div>
+              <div class="surface admin-only hidden">
+                <h2>Knowledge Base Editor</h2>
+                <form class="form-stack" id="articleForm">
+                  <input id="articleTitle" placeholder="Article Title (e.g. Password Reset Policy)" required />
+                  <input id="articleCategory" placeholder="Category (e.g. account, billing)" />
+                  <input id="articleTags" placeholder="Tags (separated by commas: password, reset, key)" />
+                  <textarea id="articleSummary" rows="2" placeholder="Brief summary of the article..."></textarea>
+                  <textarea id="articleContent" rows="8" placeholder="Detailed content of the article..." required></textarea>
+                  <select id="articleStatus">
+                    <option value="published" selected>Published</option>
+                    <option value="draft">Draft</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                  <button class="primary-button" type="submit">Publish Article</button>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <!-- FEEDBACK VIEW PANEL -->
+          <section class="view-panel hidden" data-panel="feedback">
+            <div class="split-layout">
+              <div class="surface">
+                <h2>Submit CSAT Feedback</h2>
+                <form class="form-stack" id="feedbackForm">
+                  <div class="rating-container">
+                    <span class="rating-label">Experience Rating (1-5 Stars)</span>
+                    <input id="ratingInput" type="number" min="1" max="5" value="5" class="hidden" />
+                    <div class="star-rating-widget" id="starWidget">
+                      <span data-star="1">★</span>
+                      <span data-star="2">★</span>
+                      <span data-star="3">★</span>
+                      <span data-star="4">★</span>
+                      <span data-star="5" class="active">★</span>
+                    </div>
+                  </div>
+                  <label>
+                    Support Provider
+                    <select id="feedbackSource">
+                      <option value="ai" selected>AI Virtual Agent</option>
+                      <option value="human">Human Specialist</option>
+                    </select>
+                  </label>
+                  <label>
+                    Comment / Review
+                    <textarea id="feedbackComment" rows="5" placeholder="Share your experience. What went well, and what could we improve?"></textarea>
+                  </label>
+                  <button class="primary-button" type="submit">Submit Feedback</button>
+                </form>
+              </div>
+              <div class="surface">
+                <div class="section-heading">
+                  <h2>Live CSAT Rating Stream</h2>
+                  <button class="small-button" id="refreshFeedbackButton" type="button">Refresh Stream</button>
+                </div>
+                <div class="list feedback-stream-scroll" id="feedbackList"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ADMIN VIEW PANEL -->
+          <section class="view-panel hidden" data-panel="admin">
+            <div class="metrics-grid" id="adminMetrics"></div>
+            <div class="surface">
+              <div class="section-heading">
+                <h2>System Audit Logs</h2>
+                <button class="small-button" id="refreshAuditButton" type="button">Refresh Audit Trail</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Action Logged</th>
+                      <th>Actor Role</th>
+                      <th>Target Component</th>
+                      <th>Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody id="auditRows"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <!-- TICKET DIALOG MODAL -->
+    <dialog id="ticketDialog">
+      <div class="dialog-content">
+        <form class="form-stack" id="ticketForm" method="dialog">
+          <h2>Create Support Ticket</h2>
+          <p class="dialog-lead">Manually open a support request for agent review.</p>
+          <label>
+            Subject / Headline
+            <input id="ticketSubject" placeholder="e.g. Account suspended due to payment issue" required />
+          </label>
+          <label>
+            Detailed Description
+            <textarea id="ticketDescription" rows="5" placeholder="Provide context or reproduction steps..." required></textarea>
+          </label>
+          <div class="form-row">
+            <label>
+              Priority
+              <select id="ticketPriority">
+                <option value="low">Low Priority</option>
+                <option value="medium" selected>Medium Priority</option>
+                <option value="high">High Priority</option>
+                <option value="urgent">Urgent Priority</option>
+              </select>
+            </label>
+            <label>
+              Category
+              <input id="ticketCategory" placeholder="e.g. billing, account" value="general" />
+            </label>
+          </div>
+          <div class="dialog-actions">
+            <button class="ghost-button" value="cancel" type="button" id="cancelTicketButton">Cancel</button>
+            <button class="primary-button" type="submit">Create Ticket</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    
+    <!-- Star widget interactive connector script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const starWidget = document.getElementById('starWidget');
+        const ratingInput = document.getElementById('ratingInput');
+        if (starWidget && ratingInput) {
+          const stars = Array.from(starWidget.querySelectorAll('[data-star]'));
+          stars.forEach(star => {
+            star.addEventListener('click', () => {
+              const rating = parseInt(star.dataset.star);
+              ratingInput.value = rating;
+              stars.forEach(s => {
+                const sVal = parseInt(s.dataset.star);
+                s.classList.toggle('active', sVal <= rating);
+              });
+            });
+          });
+        }
+      });
+    </script>
+    <script src="/app.js"></script>
+  </body>
+</html>

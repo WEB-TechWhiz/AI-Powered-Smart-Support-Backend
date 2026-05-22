@@ -1,0 +1,56 @@
+Here's everything you need to build the AI-Powered Smart Support Backend project:
+
+What Problem It Solves
+Small businesses and startups get repetitive customer support queries — order status, pricing, policies, complaints. Hiring support staff is expensive. This backend automates responses using AI, handling common queries instantly without human intervention.
+
+How It Works (Core Flow)
+
+User sends a query via REST API
+Backend fetches their past conversation from MongoDB (context)
+Sends context + new query to OpenAI API
+Gets AI response back
+Saves updated conversation to MongoDB
+Returns response to user
+
+
+Folder Structure
+ai-support-backend/
+├── src/
+│   ├── controllers/
+│   │   └── chatController.js
+│   ├── routes/
+│   │   └── chatRoutes.js
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── rateLimiter.js
+│   ├── models/
+│   │   └── Conversation.js
+│   ├── services/
+│   │   └── openaiService.js
+│   └── app.js
+├── .env
+└── package.json
+
+Key Modules to Build
+1. Conversation Model (MongoDB)
+Stores user ID, array of messages (role: user/assistant, content, timestamp), and token count used.
+2. OpenAI Service
+Takes user message + previous messages array, calls gpt-3.5-turbo with a system prompt like "You are a helpful customer support agent.", returns the AI reply.
+3. Rate Limiter Middleware
+Each user gets max 20 requests/hour stored in Redis. If exceeded, return 429 Too Many Requests.
+4. Token Tracker
+After each OpenAI response, read usage.total_tokens from the API response and save it to the conversation document. This lets you monitor cost per user.
+5. Fallback Logic
+If OpenAI returns an error or confidence is low (you detect this by checking if the response contains phrases like "I don't know" or "I'm not sure"), return a pre-written fallback message like "Our team will contact you shortly."
+6. Auth Middleware
+Standard JWT — user logs in, gets token, passes it in every chat request header.
+
+APIs to Build
+MethodRoutePurposePOST/api/auth/registerRegister userPOST/api/auth/loginLogin, get JWTPOST/api/chat/messageSend message, get AI replyGET/api/chat/historyGet conversation historyDELETE/api/chat/historyClear conversation
+
+.env Variables Needed
+PORT=5000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_secret
+OPENAI_API_KEY=your_openai_key
+REDIS_URL=your_redis_url
