@@ -1,47 +1,106 @@
-# 🤖 AI-Powered Smart Customer Support Backend
+# AI-Powered-Smart-Support-Backend
 
-A production-grade, highly scalable **Node.js + Express backend** designed to orchestrate AI-assisted customer support tickets. The system features JWT-based authentication, MongoDB data persistence, Redis-driven rate limiting, and OpenAI-powered ticket categorization, priority evaluation, and draft reply generation.
+![Express](https://img.shields.io/badge/Express.js-4.x-000000?style=for-the-badge&logo=express&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 
----
-
-## ⚡ Core Architecture & Features
-
-### 1. Smart Triage Pipeline (OpenAI Integration)
-* Automatically analyzes incoming client messages to classify customer **sentiment** (e.g., Frustrated, Inquiring, Happy).
-* Determines ticket **priority** (e.g., Critical, High, Medium, Low) based on request urgency.
-* Generates a context-aware **draft response** for customer service representatives to review and approve, speeding up response times by up to 70%.
-
-### 2. Scalable Security & Infrastructure
-* **JWT-Based Authentication**: Secure authentication via access and refresh tokens stored in secure HTTP-only cookies.
-* **Redis Rate Limiting**: Intelligent rate limiter preventing API abuse and safeguarding LLM resource usage.
-* **Dockerized Setup**: Multi-container architecture using `docker-compose` to link the Node app, MongoDB, and Redis instances instantly.
+> Intelligent customer support ticketing and automated response backend using semantic search, vector embeddings, and LLM resolution engines.
 
 ---
 
-## 🛠️ Technology Stack
-
-| Layer | Technologies | Description |
-| :--- | :--- | :--- |
-| **Core** | Node.js, Express.js | Event-driven runtime and REST framework |
-| **AI Integration** | OpenAI SDK (GPT-4 / GPT-3.5-Turbo) | Advanced LLM for ticket processing |
-| **Database** | MongoDB, Mongoose | Document database for storage & user accounts |
-| **Cache & Limit** | Redis | Memory database for rate-limiting & session storage |
-| **Container** | Docker, Docker-compose | Isolated dev/prod infrastructure orchestration |
+## 📋 Table of Contents
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Available Scripts](#-available-scripts)
+- [API & Route Modules](#-api--route-modules)
+- [Contributing](#-contributing)
+- [Author & License](#-author--license)
 
 ---
 
-## 📂 System Architecture
-```
+## 📌 Overview
+**AI-Powered-Smart-Support-Backend** is designed to provide a comprehensive, maintainable, and scalable solution in the **AI & Backend / Customer Support** domain. Engineered with modern industry standards and clean architecture.
+
+---
+
+## ✨ Key Features
+- **Semantic Knowledge Base Search**: Find relevant documentation via vector embeddings
+- **Automated Ticket Resolution**: Draft AI responses based on knowledge base context
+- **Human Handoff**: Seamless escalation of complex issues to live agents
+
+---
+
+## 🛠️ Tech Stack
+- **Express.js**
+- **MongoDB / Mongoose**
+- **Redis**
+- **JWT Authentication**
+- **Docker**
+
+---
+
+## 📂 Project Structure
+```text
+AI-Powered-Smart-Support-Backend/
+├── public/
+│   ├── app.js
+│   ├── index.html
+│   └── styles.css
 ├── src/
-│   ├── config/          # Environment & Database config
-│   ├── controllers/     # Route logic handlers (auth, ticket, AI triage)
-│   ├── middlewares/     # Auth checks, error handling, rate limiting
-│   ├── models/          # Mongoose Schemas (User, Ticket, Analytics)
-│   ├── routes/          # REST Endpoint definitions
-│   ├── services/        # OpenAI API wrappers
-│   └── app.js           # Express App initialization
-├── docker-compose.yml   # Multi-container script
-└── package.json         # Dependencies and scripts
+│   ├── config/
+│   │   ├── db.js
+│   │   ├── env.js
+│   │   ├── openai.js
+│   │   └── redis.js
+│   ├── controllers/
+│   │   ├── adminController.js
+│   │   ├── authController.js
+│   │   ├── chatController.js
+│   │   ├── feedbackController.js
+│   │   ├── kbController.js
+│   │   └── ticketController.js
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   ├── errorHandler.js
+│   │   ├── notFound.js
+│   │   ├── rateLimiter.js
+│   │   ├── requestContext.js
+│   │   └── requireRole.js
+│   ├── models/
+│   │   ├── AuditLog.js
+│   │   ├── Conversation.js
+│   │   ├── Feedback.js
+│   │   ├── KnowledgeArticle.js
+│   │   ├── Message.js
+│   │   ├── Ticket.js
+│   │   └── User.js
+│   ├── routes/
+│   │   ├── adminRoutes.js
+│   │   ├── authRoutes.js
+│   │   ├── chatRoutes.js
+│   │   ├── feedbackRoutes.js
+│   │   ├── kbRoutes.js
+│   │   └── ticketRoutes.js
+│   ├── services/
+│   │   ├── aiService.js
+│   │   ├── knowledgeService.js
+│   │   ├── openaiService.js
+│   │   └── ticketService.js
+│   ├── utils/
+│   │   ├── appError.js
+│   │   └── slugify.js
+│   ├── app.js
+│   └── server.js
+├── test/
+│   ├── integration.test.js
+│   └── smoke.test.js
+├── .gitignore
+├── docker-compose.yml
+├── Document.doc
+├── package-lock.json
+├── package.json
+└── README.md
 ```
 
 ---
@@ -49,19 +108,53 @@ A production-grade, highly scalable **Node.js + Express backend** designed to or
 ## 🚀 Getting Started
 
 ### Prerequisites
-* Docker and Docker Compose Installed OR Local Node.js, MongoDB, and Redis installed.
+- **Node.js** (v18.x or higher recommended)
+- **npm**, **yarn**, or **pnpm**
 
-### Setup Instructions
-1. Clone this repository and rename `.env.example` to `.env`. Populate the variables:
-   ```env
-   PORT=8080
-   MONGODB_URI=mongodb://localhost:27017/support_db
-   REDIS_URL=redis://localhost:6379
-   JWT_SECRET=your_secret_key
-   OPENAI_API_KEY=your_openai_key
-   ```
-2. Launch using Docker:
+### Installation
+
+1. **Clone the repository:**
    ```bash
-   docker-compose up --build
+   git clone https://github.com/WEB-TechWhiz/AI-Powered-Smart-Support-Backend.git
+   cd AI-Powered-Smart-Support-Backend
    ```
-3. The server will launch on `http://localhost:8080`.
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+
+5. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+
+## 📜 Available Scripts
+
+In the project directory, you can run:
+
+| Command | Action |
+|---|---|
+| `npm run start` (or `npm test` / `npm start`) | `node src/server.js` |
+| `npm run dev` (or `npm test` / `npm start`) | `nodemon src/server.js` |
+| `npm run test` (or `npm test` / `npm start`) | `node --test test/smoke.test.js test/integration.test.js` |
+
+## 🛣️ API & Route Modules
+
+- Modules located in `src/routes/`: `adminRoutes.js`, `authRoutes.js`, `chatRoutes.js`, `feedbackRoutes.js`, `kbRoutes.js`, `ticketRoutes.js`
+
+## 🤝 Contributing
+Contributions, feedback, and pull requests are warmly welcomed!
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'feat: Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 👤 Author & License
+- **Maintainer**: [WEB-TechWhiz](https://github.com/WEB-TechWhiz)
+- **License**: Distributed under the MIT License.
